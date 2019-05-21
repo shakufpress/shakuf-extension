@@ -1,0 +1,24 @@
+.shakuf_marked {
+    background-color: rgba(56, 181, 173, 0.32) !important;
+}
+
+.shakuf_stopped{
+    background-color: unset !important;
+}
+
+#shakuf_iframe, #shakuf_inner_iframe {
+    position: absolute !important;
+    z-index: 2147483647 !important;
+    border: none !important;
+    width:650px !important;
+    height:270px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius:5px !important;
+    box-shadow: rgba(140, 130, 130, 0.65) 0px 1px 3px 2px !important;
+}
+
+#shakuf_iframe{
+    display:none;
+}
