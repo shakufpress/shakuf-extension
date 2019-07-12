@@ -1,21 +1,12 @@
 {
   "background": {
-    "scripts": [
-      "background/background.js"
-    ]
+    "scripts": ["background/background.js"]
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "content/content.js"
-      ],
-      "css": [
-        "content/content.css"
-      ],
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
       "run_at": "document_start"
     }
   ],
@@ -36,7 +27,7 @@
     "contextMenus"
   ],
   "short_name": "שקוף - מפת הח\"כים",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "web_accessible_resources": [
     "images/*",
     "overlay/overlay.html",
