@@ -56,7 +56,7 @@ export const HEBREW_LOOKUP = {
     NOT_FOUND: 'עדיין לא מצאנו משהו - דווחו לנו אם אתם יודעים!',
     IRRELEVANT: 'לא רלוונטי',
     FLIGHTS_DETAILS: 'פירוט טיסות',
-    GENERAL:'כללי',
+    GENERAL: 'כללי',
     ORIGIN: 'מקור',
     LOADING: 'טוען מידע...',
     PARTY: 'מפלגה',
@@ -69,5 +69,8 @@ export const HEBREW_LOOKUP = {
         TZALASHIM: 'צל"שים',
         WORK_AS_HAK: 'עבודה כח"כ',
         TRANS: 'שקיפות'
-    }
+    },
+    ATTRIBUTE_NAME: "שם הגדרה",
+    ATTRIBUTE_VALUE: "ערך הגדרה",
+    CURRENT_KNESSET: "כנסת נוכחית"
 };

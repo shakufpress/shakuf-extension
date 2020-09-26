@@ -1,10 +1,10 @@
 import {
-    OVERLAY_MESSAGING,
     IFRAME_ID,
     INNER_IFRAME_ID,
+    OVERLAY_MESSAGING,
+    PAGE_MESSAGING,
     SHAKUF_MARKED_CLASSNAME,
-    SHOULD_RUN_ON_PAGE,
-    PAGE_MESSAGING
+    SHOULD_RUN_ON_PAGE
 } from '../constants';
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
@@ -38,7 +38,7 @@ document.addEventListener('mouseover', (nameElement) => {
                     marginOnSideOfOverlayVsPage
                 )
             )
-            }px`;
+        }px`;
         iframe.style.top = `
                         ${
             // top of element + height of element + overlayHeight get below fold (document.body.clientHeight):
@@ -51,7 +51,7 @@ document.addEventListener('mouseover', (nameElement) => {
                     nameElement.pageY + nameElementBoundaries.height,
                     0
                 )
-            }px`;
+        }px`;
         // @formatter:on
         const name = nameElement.target.innerText;
         chrome.runtime.sendMessage({
@@ -174,6 +174,12 @@ const injectToPage = () => {
     }
 };
 
+const isElementCurrentlyBeingEdited = (e) => {
+    if (e.textOnly) return false;
+    if (e.node.closest('[contenteditable]') || e.node.getAttribute('[contenteditable]')) return true;
+    return false;
+}
+
 const findAndMarkInPage = async (names) => {
     if (!shouldRun) {
         return;
@@ -202,7 +208,11 @@ const findAndMarkInPage = async (names) => {
             for (let hk of names) {
                 const re = new RegExp(hk.name, 'ig');
                 const matching = element.node[regexAttribute].match(re);
+
                 if (matching) {
+                    // don't handle elements if they are inside inputs or editable nodes
+                    if (isElementCurrentlyBeingEdited(element)) return;
+
                     chrome.runtime.sendMessage({
                         action: 'gaEvent',
                         ga: {
