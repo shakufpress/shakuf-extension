@@ -3,8 +3,3 @@
 # Run "npm i"
 # Run npm run script DEV for local build or npm run script BUILD for production build
 # Load files from dist folder into Chrome
-
-
-/// issues
-// middle names (maybe add 'more' key?)
-// images missing, image_filename - what path?
