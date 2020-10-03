@@ -230,9 +230,9 @@ const isElementCurrentlyBeingEdited = (e) => {
 
                     //  replacing the  nodes/texts to have a span with the hover listener and relevant design
                     if (element.textOnly) {
-                        element.node.parentElement.innerHTML = element.node.parentElement.innerHTML.replace(re, `<mark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</mark>`);
+                        element.node.parentElement.innerHTML = element.node.parentElement.innerHTML.replace(re, `<shakufmark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</shakufmark>`);
                     } else {
-                        element.node.innerHTML = element.node.innerHTML.replace(re, `<mark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</mark>`);
+                        element.node.innerHTML = element.node.innerHTML.replace(re, `<shakufmark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</shakufmark>`);
 
                     }
 
