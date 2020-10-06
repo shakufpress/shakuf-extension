@@ -1,10 +1,10 @@
 import {
-    OVERLAY_MESSAGING,
     IFRAME_ID,
     INNER_IFRAME_ID,
+    OVERLAY_MESSAGING,
+    PAGE_MESSAGING,
     SHAKUF_MARKED_CLASSNAME,
-    SHOULD_RUN_ON_PAGE,
-    PAGE_MESSAGING
+    SHOULD_RUN_ON_PAGE
 } from '../constants';
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
@@ -15,15 +15,21 @@ const marginOnSideOfOverlayVsPage = 20;
 const shouldHideCheckIntervalDurationInMs = 200;
 const findingInPageIntervalDurationMs = 2000;
 
+const SELECTORS_TO_SEARCH_ON = 'body *:not(iframe):not(script):not(img):not(br):not(.shakuf_marked):not(link):not(style)';
+
 //  mouseover the relevant detected name should show the overlay:
 document.addEventListener('mouseover', (nameElement) => {
+    //  in case closed while on page, it won't work
     if (!shouldRun) {
         return;
     }
+    //  a name got hovered
     if (nameElement.target && nameElement.target !== hovered && nameElement.target.className && nameElement.target.className === SHAKUF_MARKED_CLASSNAME) {
         active = true;
         hovered = nameElement.target;
         clearInterval(shouldHideCheckInterval);
+
+        //  get the iframe and display it wheere needed
         const iframe = document.getElementById(IFRAME_ID);
         iframe.style.opacity = 1;
         const nameElementBoundaries = nameElement.target.getBoundingClientRect();
@@ -38,7 +44,7 @@ document.addEventListener('mouseover', (nameElement) => {
                     marginOnSideOfOverlayVsPage
                 )
             )
-            }px`;
+        }px`;
         iframe.style.top = `
                         ${
             // top of element + height of element + overlayHeight get below fold (document.body.clientHeight):
@@ -51,13 +57,12 @@ document.addEventListener('mouseover', (nameElement) => {
                     nameElement.pageY + nameElementBoundaries.height,
                     0
                 )
-            }px`;
+        }px`;
         // @formatter:on
         const name = nameElement.target.innerText;
-        chrome.runtime.sendMessage({
-            action: 'gaEvent',
-            ga: {category: 'Page', action: 'Hover', label: name, customDimensions: {cd2: location.hostname}}
-        });
+        gaTrack({category: 'Page', action: 'Hover', label: name, customDimensions: {cd2: location.hostname}})
+
+        //  asking for hover event (background will trigger the overlay)
         chrome.runtime.sendMessage({
             action: OVERLAY_MESSAGING.SHAKUF_HOVER,
             name: name
@@ -74,10 +79,7 @@ document.addEventListener('click', (e) => {
     if (!active || e.target.className === SHAKUF_MARKED_CLASSNAME || e.target.id === IFRAME_ID || e.target.closest(`#${IFRAME_ID}`)) {
         return;
     }
-    chrome.runtime.sendMessage({
-        action: 'gaEvent',
-        ga: {category: 'Page', action: 'Closed', label: name, customDimensions: {cd2: location.hostname}}
-    });
+    gaTrack({category: 'Page', action: 'Closed', label: name, customDimensions: {cd2: location.hostname}});
     active = false;
     hovered = false;
     clearInterval(shouldHideCheckInterval);
@@ -99,6 +101,14 @@ document.onmousemove = (e) => {
     cursorX = e.clientX;
     cursorY = e.clientY;
 };
+
+const gaTrack = (gaEventParams) => {
+    if (!gaEventParams) return;
+    chrome.runtime.sendMessage({
+        action: 'gaEvent',
+        ga: {...gaEventParams}
+    });
+}
 
 const fadeOut = (s) => {
     return new Promise(resolve => {
@@ -135,15 +145,13 @@ const shouldHide = async (name) => {
                     //  nothing on page
                 }
             });
-            chrome.runtime.sendMessage({
-                action: 'gaEvent',
-                ga: {category: 'Page', action: 'FadeOut', label: name, customDimensions: {cd2: location.hostname}}
-            });
+            gaTrack({category: 'Page', action: 'FadeOut', label: name, customDimensions: {cd2: location.hostname}})
         }
     }
 };
 
-const injectToPage = () => {
+// Injecting the overlay to the page once when relevant, ready for hover event
+const injectOverlayToPageOnce = () => {
     if (!injectedThisSession) {
         injectedThisSession = true;
         //  removing iframes from before, probably bugs and earliy version:
@@ -174,13 +182,18 @@ const injectToPage = () => {
     }
 };
 
-const findAndMarkInPage = async (names) => {
-    if (!shouldRun) {
-        return;
-    }
+// having the logic on edited elements is bad, prevent it
+const isElementCurrentlyBeingEdited = (e) => {
+    if (e.textOnly) return false;
+    if (e.node.closest('[contenteditable]') === "true" || e.node.getAttribute('[contenteditable]') === "true") return true;
+    return false;
+}
+
+// find the names in the page:
+    const findAndMarkInPage = async (names) => {
     requestAnimationFrame(() => {
         const relevantElements = [];
-        const elements = Array.from(document.querySelectorAll('body *:not(iframe):not(script):not(img):not(br):not(.shakuf_marked):not(link):not(style)'));
+        const elements = Array.from(document.querySelectorAll(SELECTORS_TO_SEARCH_ON));
         elements.forEach(e => {
             if ((e.childNodes.length === 1 && e.childNodes[0].nodeName === '#text' && e.innerText)) {
                 relevantElements.push({node: e});
@@ -195,43 +208,46 @@ const findAndMarkInPage = async (names) => {
                 }
             }
         });
-        //  console.log("found", relevantElements.length, "relevant elements");
         let replaced = 0;
         for (let element of relevantElements) {
             const regexAttribute = element.textOnly ? 'nodeValue' : 'innerText';
             for (let hk of names) {
                 const re = new RegExp(hk.name, 'ig');
                 const matching = element.node[regexAttribute].match(re);
+
                 if (matching) {
-                    chrome.runtime.sendMessage({
-                        action: 'gaEvent',
-                        ga: {
-                            category: 'Page',
-                            action: 'Found',
-                            label: hk.name,
-                            customDimensions: {cd2: location.hostname}
-                        }
+                    // don't handle elements if they are inside inputs or editable nodes
+                    if (isElementCurrentlyBeingEdited(element)) return;
+
+                    gaTrack({
+                        category: 'Page',
+                        action: 'Found',
+                        label: hk.name,
+                        customDimensions: {cd2: location.hostname}
                     });
-                    injectToPage();
+
+                    injectOverlayToPageOnce();
+
+                    //  replacing the  nodes/texts to have a span with the hover listener and relevant design
                     if (element.textOnly) {
-                        element.node.parentElement.innerHTML = element.node.parentElement.innerHTML.replace(re, `<span class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</span>`);
+                        element.node.parentElement.innerHTML = element.node.parentElement.innerHTML.replace(re, `<shakufmark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</shakufmark>`);
                     } else {
-                        element.node.innerHTML = element.node.innerHTML.replace(re, `<span class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</span>`);
+                        element.node.innerHTML = element.node.innerHTML.replace(re, `<shakufmark class='shakuf_marked' shakuf='${hk.id}'>${hk.name}</shakufmark>`);
 
                     }
-                    //console.log("break on", hk, element);
+
                     replaced++;
                     break;
                 }
             }
         }
-        //  console.log('replaced', replaced, 'names');
         setTimeout(findAndMarkInPage.bind(null, names), findingInPageIntervalDurationMs);
     });
-
 };
 
+// main logic
 const onPageLogic = () => {
+    //  get all relevant names for page so we'll search for them
     chrome.runtime.sendMessage({action: 'getNames'}, (names) => {
         if (chrome.runtime.lastError || !names) {
             return console.error(chrome.runtime.lastError);
@@ -240,34 +256,29 @@ const onPageLogic = () => {
     });
 };
 
-const shouldNotRunOnThisSite = () => {
-    const isBlocked = ['https://web.whatsapp.com/', 'https://docs.google.com'].some(blockedSite => {
-        return location.href.startsWith(blockedSite);
-    });
-    return isBlocked;
-};
+//  STARTING HERE: asking background if should runs
+chrome.runtime.sendMessage({action: SHOULD_RUN_ON_PAGE}, (shouldRunOnPage) => {
+    if (chrome.runtime.lastError) {
+        return;
+    }
+    if (shouldRunOnPage) {
+        shouldRun = true; // local flag
+        onPageLogic();
+    }
+});
 
-if (!shouldNotRunOnThisSite()) {
-    chrome.runtime.sendMessage({action: SHOULD_RUN_ON_PAGE}, (shouldRunOnPage) => {
-        if (chrome.runtime.lastError) {
-            return;
-        }
-        if (shouldRunOnPage) {
-            shouldRun = true;
-            onPageLogic();
-        }
-    });
-}
-
+//  on page messaging listeners from background:
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.action) {
         case PAGE_MESSAGING.STOP:
+            // stop from browser icon
             shouldRun = false;
             Array.from(document.querySelectorAll(`.${SHAKUF_MARKED_CLASSNAME}`)).forEach(e => {
                 e.classList.add('shakuf_stopped');
             });
             break;
         case PAGE_MESSAGING.START:
+            // start from browser icon
             shouldRun = true;
             Array.from(document.querySelectorAll(`.${SHAKUF_MARKED_CLASSNAME}`)).forEach(e => {
                 e.classList.remove('shakuf_stopped');

@@ -1,5 +1,8 @@
 .shakuf_marked {
-    background-color: rgba(56, 181, 173, 0.32) !important;
+    background-color: rgba(56, 181, 173, 0.2) !important;
+    height: fit-content;
+    width: fit-content;
+    display: inline-block;
 }
 
 .shakuf_stopped{
