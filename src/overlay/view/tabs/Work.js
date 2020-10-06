@@ -7,7 +7,7 @@ export default class Work extends React.Component {
 
     render() {
         const {details} = this.props;
-        console.log(details);
+
         return <>
             <Title>{HEBREW_LOOKUP.TABS_TITLES.WORK}</Title>
             <Content>

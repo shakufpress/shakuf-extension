@@ -38,6 +38,7 @@ export const HEBREW_LOOKUP = {
     HIDE_IN_SITE: 'להסתיר באתר',
     ENTER_FOR_INFO: 'היכנסו לאתר כדי לראות את המידע המלא',
     NAME: 'שם',
+    NICKNAME: 'כינוי',
     IN_COMMITTEE: 'נוכחות בוועדות הכנסת',
     COMMITTEE_ATTENDANCE: 'נוכחות בוועדות הכנסת',
     TARASHIM: 'טרשים',

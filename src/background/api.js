@@ -21,24 +21,32 @@ const prepareData = (json) => {
     //  new way, delete old after having in production
     if (currentKnesset && currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]) {
         const hakData = Object.values(json.src[currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]]);
-        hakData.forEach(hk =>{
+        hakData.forEach(hk => {
             if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
                 return;
             }
+
             if (!hk[HEBREW_LOOKUP.NAME]) {
                 return;
             }
-            Object.keys(hk).forEach(e => {
-                hk[e] = decodeString(hk[e]);
-            });
+
             hk.imgSrc = hk.image_filename;
             let name = hk[HEBREW_LOOKUP.NAME];
-            if (["'", "׳"].includes(name[name.length-1])) {
-                name = name.substring(0,name.length-1);
+            if (["'", "׳"].includes(name[name.length - 1])) {
+                name = name.substring(0, name.length - 1);
             }
             names.push({name: name, id: hk['id']});
             data[name] = hk;
+
+            if (hk[HEBREW_LOOKUP.NICKNAME] && hk[HEBREW_LOOKUP.NICKNAME] !== hk[HEBREW_LOOKUP.NAME]) {
+                hk[HEBREW_LOOKUP.NICKNAME].split(',').forEach(nickName => {
+                    names.push({name: nickName, id: hk['id']});
+                    data[nickName] = hk;
+                })
+            }
+
         });
+
         return;
     }
 
@@ -48,6 +56,7 @@ const prepareData = (json) => {
         if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
             return;
         }
+
         if (!hk[HEBREW_LOOKUP.NAME]) {
             return;
         }
@@ -57,8 +66,8 @@ const prepareData = (json) => {
         });
 
         let name = hk[HEBREW_LOOKUP.NAME];
-        if (["'", "׳"].includes(name[name.length-1])) {
-            name = name.substring(0,name.length-1);
+        if (["'", "׳"].includes(name[name.length - 1])) {
+            name = name.substring(0, name.length - 1);
         }
         names.push({name: name, id: hk['#']});
         data[name] = hk;
