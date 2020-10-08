@@ -185,7 +185,7 @@ const injectOverlayToPageOnce = () => {
 // having the logic on edited elements is bad, prevent it
 const isElementCurrentlyBeingEdited = (e) => {
     if (e.textOnly) return false;
-    if (e.node.closest('[contenteditable]') === "true" || e.node.getAttribute('[contenteditable]') === "true") return true;
+    if (e.node.closest('[contenteditable]') || e.node.getAttribute('[contenteditable]') === "true") return true;
     return false;
 }
 
