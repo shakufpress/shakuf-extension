@@ -5,6 +5,10 @@
     display: inline-block;
 }
 
+.shakuf_marked_commercial {
+    background-color: rgba(241, 100, 18, 0.6) !important;
+}
+
 .shakuf_stopped{
     background-color: unset !important;
 }

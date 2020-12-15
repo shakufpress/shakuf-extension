@@ -245,6 +245,27 @@ const isElementCurrentlyBeingEdited = (e) => {
     });
 };
 
+const findAndMarkCommercialsInPage = async (rules) => {
+    requestAnimationFrame(() => {
+        const targetNodes = rules.reduce((nodes, rule) => {
+            const potenial = Array.from(document.querySelectorAll(rule.selector))
+
+            const targetNodes = potenial.filter(node => node.innerText && rule.innerTextPredicator(node.innerText))
+            return [...nodes, ...targetNodes]
+        }, [])
+
+
+        targetNodes.forEach(node => {
+
+            if (!node.className.includes('shakuf_marked_commercial')) {
+                node.className += ' shakuf_marked_commercial'
+            }
+        })
+        setTimeout(findAndMarkCommercialsInPage.bind(null, rules), findingInPageIntervalDurationMs);
+    });
+};
+
+
 // main logic
 const onPageLogic = () => {
     //  get all relevant names for page so we'll search for them
@@ -254,6 +275,13 @@ const onPageLogic = () => {
         }
         findAndMarkInPage(names);
     });
+
+    // const ruleStructure = {
+    //     selector: '',
+    //     innerTextPredicator: (innerHtml) => true
+    // }
+    const rules = [{selector: 'span[data-text=true]', innerTextPredicator: text => text.startsWith("בשיתוף")}]
+    findAndMarkCommercialsInPage(rules)
 };
 
 //  STARTING HERE: asking background if should runs
