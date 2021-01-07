@@ -29,8 +29,8 @@ export default class Primary extends React.Component {
         const address = details[HEBREW_LOOKUP.ADDRESS];
 
         return <>
-            {address &&
-            <About>{`${isFemale ? HEBREW_LOOKUP.LIVING_FEMALE : HEBREW_LOOKUP.LIVING_MALE} ${HEBREW_LOOKUP.IN}${address}`}</About>}
+            {/*{address &&*/}
+            {/*<About>{`${isFemale ? HEBREW_LOOKUP.LIVING_FEMALE : HEBREW_LOOKUP.LIVING_MALE} ${HEBREW_LOOKUP.IN}${address}`}</About>}*/}
             <Suggest>{HEBREW_LOOKUP.MOVE_SUGGESTION}</Suggest>
         </>
     }
