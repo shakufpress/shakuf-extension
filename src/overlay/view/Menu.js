@@ -50,11 +50,6 @@ export default class Menu extends React.Component {
                           active={view === 'work'}></MenuItem>
             </MenuItemWrap>
             <MenuItemWrap>
-                <MenuItem title={HEBREW_LOOKUP.TABS_TITLES.FLIGHTS} className="fas fa-plane"
-                          onClick={() => changeView('flights')}
-                          active={view === 'flights'}></MenuItem>
-            </MenuItemWrap>
-            <MenuItemWrap>
                 <MenuItem title={HEBREW_LOOKUP.TABS_TITLES.TRANS} className="fas fa-balance-scale"
                           onClick={() => changeView('trans')}
                           active={view === 'trans'}></MenuItem>
