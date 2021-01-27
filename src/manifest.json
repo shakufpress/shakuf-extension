@@ -24,7 +24,7 @@
     "contextMenus"
   ],
   "short_name": "שקוף - מפת הח\"כים",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "web_accessible_resources": [
     "images/*",
     "overlay/overlay.html",

@@ -8,6 +8,7 @@ import Trans from './tabs/Trans';
 import Good from './tabs/Good';
 import Bad from './tabs/Bad';
 import {HEBREW_LOOKUP, OVERLAY_MESSAGING, URLS, VIEWS} from '../../constants';
+import decode from "../../services/decode-html";
 
 const Box = styled.div`
   font-family: 'Heebo', sans-serif !important;
@@ -242,8 +243,8 @@ export default class App extends React.Component {
                     <>
                         <Menu view={view} changeView={this.changeView}/>
                         <Tab>
-                            <Name> {details[HEBREW_LOOKUP.NAME]}</Name>
-                            <Party>{details[HEBREW_LOOKUP.PARTY]}</Party>
+                            <Name> {decode(details[HEBREW_LOOKUP.NAME])}</Name>
+                            <Party>{decode(details[HEBREW_LOOKUP.PARTY])}</Party>
                             <View>
                                 {this.getView()}
                             </View>

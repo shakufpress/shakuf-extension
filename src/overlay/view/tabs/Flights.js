@@ -2,6 +2,7 @@ import * as React from 'react';
 import Linkify from 'react-linkify'
 import {Title, Content} from '../helpers/commonComponents';
 import {HEBREW_LOOKUP} from "../../../constants";
+import decode from "../../../services/decode-html";
 
 
 export default class Flights extends React.Component {
@@ -15,7 +16,7 @@ export default class Flights extends React.Component {
                 details[HEBREW_LOOKUP.FLIGHTS_DETAILS].split('\n')
                     .map((item, i) => {
                         if (item)
-                            return <li key={i}><Linkify>{item}</Linkify></li>;
+                            return <li key={i}><Linkify>{decode(item)}</Linkify></li>;
                     }) : <li>{
                     irrelevant ? details[HEBREW_LOOKUP.COMMITTEE_ATTENDANCE] : HEBREW_LOOKUP.MISSING
                 }</li>}</Content>

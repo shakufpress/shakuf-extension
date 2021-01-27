@@ -8,7 +8,7 @@ import {
 } from '../constants';
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
-const marginOfHiding = 100;
+const marginOfHiding = 75;
 const overlayWidth = 650;
 const overlayHeight = 270;
 const marginOnSideOfOverlayVsPage = 20;
