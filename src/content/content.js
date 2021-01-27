@@ -139,7 +139,7 @@ const shouldHide = async (name) => {
             active = false;
             hovered = false;
             const s = iframe.style;
-             fadeOut(s);
+            await fadeOut(s);
             chrome.runtime.sendMessage({action: OVERLAY_MESSAGING.SHAKUF_UNHOVER, name: name}, () => {
                 if (chrome.runtime.lastError) {
                     //  nothing on page
