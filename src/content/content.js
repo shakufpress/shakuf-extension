@@ -8,7 +8,7 @@ import {
 } from '../constants';
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
-const marginOfHiding = 100;
+const marginOfHiding = 75;
 const overlayWidth = 650;
 const overlayHeight = 270;
 const marginOnSideOfOverlayVsPage = 20;
@@ -139,7 +139,7 @@ const shouldHide = async (name) => {
             active = false;
             hovered = false;
             const s = iframe.style;
-            await fadeOut(s);
+             fadeOut(s);
             chrome.runtime.sendMessage({action: OVERLAY_MESSAGING.SHAKUF_UNHOVER, name: name}, () => {
                 if (chrome.runtime.lastError) {
                     //  nothing on page
