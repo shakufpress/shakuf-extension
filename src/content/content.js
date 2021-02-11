@@ -247,11 +247,11 @@ const isElementCurrentlyBeingEdited = (e) => {
 
 const findAndMarkCommercialsInPage = async (rules) => {
     requestAnimationFrame(() => {
-        const targetNodes = rules.reduce((nodes, rule) => {
+        const targetNodes = rules.filter(rule => new RegExp(rule.domain).test(window.location.hostname)).reduce((nodes, rule) => {
             const potenial = Array.from(document.querySelectorAll(rule.selector))
 
-            const targetNodes = potenial.filter(node => node.innerText && rule.innerTextPredicator(node.innerText))
-            return [...nodes, ...targetNodes]
+            const additionalNodes = potenial.filter(node => node.innerText && new RegExp(rule.regexRule).test(node.innerText))
+            return [...nodes, ...additionalNodes]
         }, [])
 
 
