@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Title, Content} from '../helpers/commonComponents';
 import Linkify from 'react-linkify'
 import {HEBREW_LOOKUP} from "../../../constants";
+import decode from "../../../services/decode-html";
 
 export default class Work extends React.Component {
 
@@ -9,13 +10,13 @@ export default class Work extends React.Component {
         const {details} = this.props;
 
         return <>
-            <Title>{HEBREW_LOOKUP.TABS_TITLES.WORK}</Title>
+            <Title>שאילתות</Title>
             <Content>
-                {details[HEBREW_LOOKUP.IN_COMMITTEE] ?
-                    details[HEBREW_LOOKUP.COMMITTEE_ATTENDANCE].split('\n')
+                {details[HEBREW_LOOKUP.QUESTIONS] ?
+                    details[HEBREW_LOOKUP.QUESTIONS].split('\n')
                         .map((item, i) => {
                             if (item)
-                                return <li key={i}><Linkify>{item}</Linkify></li>;
+                                return <li key={i}><Linkify>{decode(item)}</Linkify></li>;
                         }) : <li>{HEBREW_LOOKUP.MISSING}</li>}
             </Content>
             <Title>נוכחות במליאה</Title>

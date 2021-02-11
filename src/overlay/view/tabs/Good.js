@@ -2,6 +2,7 @@ import * as React from 'react';
 import Linkify from 'react-linkify'
 import {Title, Content, MailLink} from '../helpers/commonComponents';
 import {HEBREW_LOOKUP, URLS} from "../../../constants";
+import decode from "../../../services/decode-html";
 
 export default class Good extends React.Component {
 
@@ -17,7 +18,7 @@ export default class Good extends React.Component {
                 details[HEBREW_LOOKUP.TZALASHIM].split('\n')
                     .map((item, i) => {
                         if (item)
-                            return <li key={i}><Linkify>{item}</Linkify></li>;
+                            return <li key={i}><Linkify>{decode(item)}</Linkify></li>;
                     }) :
                 <div>
                     <div>{HEBREW_LOOKUP.NOT_FOUND}</div>

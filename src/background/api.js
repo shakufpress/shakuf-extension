@@ -86,7 +86,7 @@ const fetchData = async () => {
     try {
         names = [];
         data = {};
-        let response = await fetch(url);
+        let response = await fetch(url + '?cb=' +  new Date().getTime());
         let json = await response.json();
         prepareData(json);
         //  console.log(data, names);

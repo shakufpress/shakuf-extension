@@ -40,6 +40,7 @@ export const HEBREW_LOOKUP = {
     NAME: 'שם',
     NICKNAME: 'כינוי',
     IN_COMMITTEE: 'נוכחות בוועדות הכנסת',
+    QUESTIONS: 'שאילתות',
     COMMITTEE_ATTENDANCE: 'נוכחות בוועדות הכנסת',
     TARASHIM: 'טרשים',
     TZALASHIM: 'צלשים',
