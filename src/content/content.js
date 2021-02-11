@@ -276,12 +276,13 @@ const onPageLogic = () => {
         findAndMarkInPage(names);
     });
 
-    // const ruleStructure = {
-    //     selector: '',
-    //     innerTextPredicator: (innerHtml) => true
-    // }
-    const rules = [{selector: 'span[data-text=true]', innerTextPredicator: text => text.startsWith("בשיתוף")}]
-    findAndMarkCommercialsInPage(rules)
+
+    chrome.runtime.sendMessage({action: 'getRules'}, (rules) => {
+        if (chrome.runtime.lastError || !rules) {
+            return console.error(chrome.runtime.lastError);
+        }
+        findAndMarkCommercialsInPage(rules)
+    });
 };
 
 //  STARTING HERE: asking background if should runs

@@ -1,10 +1,12 @@
 import {HEBREW_LOOKUP} from "../constants";
 
 const url = 'https://shakuf.press/hak/settings.json';
+const ext_rules_url = 'https://shakuf.press/hak/ext/ext_rules.json';
 const stagingUrl = 'https://shakuf.press/hak_staging/settings.json';
 const fetchInterval = 1000 * 60 * 60 * 24;
 let data = {};
 let names = [];
+let rules = [];
 
 
 const decodeString = (str) => {
@@ -95,13 +97,35 @@ const fetchData = async () => {
     }
 };
 
-export const init = async () => {
+const fetchRules = async () => {
+    try {
+        rules = [];
+        let response = await fetch(ext_rules_url);
+        return await response.json();
+    } catch (e) {
+        conosle.error(e)
+    }
+};
 
+const updateRules = async () => {
+    try {
+        rules = await fetchRules()
+    } catch (e) {
+        conosle.error(e)
+    }
+};
+
+export const init = async () => {
     await fetchData();
+    await updateRules();
     setInterval(fetchData, fetchInterval);
+    setInterval(updateRules, fetchInterval);
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         switch (message.action) {
+            case 'getRules':
+                sendResponse(rules);
+                break;
             case 'getNames':
                 sendResponse(names);
                 break;
