@@ -283,6 +283,13 @@ const onPageLogic = () => {
         }
         findAndMarkCommercialsInPage(rules)
     });
+
+    // const mock_rules = [{"id":"1","domain":"www\.ynet\.co\.il","selector":"span[data-text=true]","regexRule":"בשיתוף"},
+    // {"id":"2","domain":"www\.ynet\.co\.il","selector":"span p:first-child","regexRule":"התכנים במדור זה מוגשים בשיתוף"},
+    // {"id":"3","domain":"walla\.co\.il","selector":"div.author span","regexRule":"בשיתוף"},
+    // {"id":"4","domain":"www\.mako\.co\.il","selector":"ul.icons-bar a","regexRule":"בשיתוף"},
+    // ]
+    // findAndMarkCommercialsInPage(mock_rules)
 };
 
 //  STARTING HERE: asking background if should runs
