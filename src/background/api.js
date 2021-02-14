@@ -103,7 +103,7 @@ const fetchRules = async () => {
         let response = await fetch(ext_rules_url);
         return await response.json();
     } catch (e) {
-        conosle.error(e)
+        console.error(e)
     }
 };
 
@@ -111,7 +111,7 @@ const updateRules = async () => {
     try {
         rules = await fetchRules()
     } catch (e) {
-        conosle.error(e)
+        console.error(e)
     }
 };
 
