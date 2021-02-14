@@ -88,7 +88,7 @@ const fetchData = async () => {
     try {
         names = [];
         data = {};
-        let response = await fetch(url + '?cb=' +  new Date().getTime());
+        let response = await Promise.all([fetch(url + '?cb=' +  new Date().getTime()), updateRules()])
         let json = await response.json();
         prepareData(json);
         //  console.log(data, names);
@@ -117,9 +117,7 @@ const updateRules = async () => {
 
 export const init = async () => {
     await fetchData();
-    await updateRules();
     setInterval(fetchData, fetchInterval);
-    setInterval(updateRules, fetchInterval);
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         switch (message.action) {
