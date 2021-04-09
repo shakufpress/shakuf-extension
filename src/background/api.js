@@ -3,12 +3,10 @@ import {HEBREW_LOOKUP} from "../constants";
 const url = 'https://shakuf.press/hak/settings.json';
 const ext_rules_url = 'https://shakuf.press/hak/ext/ext_rules.json';
 const stagingUrl = 'https://shakuf.press/hak_staging/settings.json';
-// const fetchInterval = 1000 * 60 * 60 * 24;
-const fetchInterval = 1000 * 3;
+const fetchInterval = 1000 * 60 * 60 * 24;
 let data = {};
 let names = [];
-// let rules = [];
-let rules = [{"id":"1","domain":"ynet.co.il","selector":"span[data-text=true]","regexRule":"בשיתוף"}];
+let rules = [];
 
 
 const decodeString = (str) => {
@@ -102,7 +100,6 @@ const fetchData = async () => {
 const fetchRules = async () => {
     try {
         rules = [];
-
         let response = await fetch(ext_rules_url);
         return await response.json();
     } catch (e) {
@@ -112,8 +109,7 @@ const fetchRules = async () => {
 
 const fetchAndUpdateRules = async () => {
     try {
-        // rules = await fetchRules()
-        console.log('rules: ', rules);
+        rules = await fetchRules()
     } catch (e) {
         console.error(e)
     }
