@@ -16,6 +16,7 @@ const shouldHideCheckIntervalDurationInMs = 200;
 const findingInPageIntervalDurationMs = 2000;
 
 const SELECTORS_TO_SEARCH_ON = 'body *:not(iframe):not(script):not(img):not(br):not(.shakuf_marked):not(link):not(style)';
+const SHAKUF_WARNING_ELEMENT_ID = 'shakuf_warning'
 
 //  mouseover the relevant detected name should show the overlay:
 document.addEventListener('mouseover', (nameElement) => {
@@ -245,7 +246,27 @@ const isElementCurrentlyBeingEdited = (e) => {
     });
 };
 
+const addComercialWarning = () => {
+    const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID)
+    if (warningNode) return
+
+    const warning = document.createElement('div')
+    warning.id = SHAKUF_WARNING_ELEMENT_ID
+    warning.style.position = "fixed"
+    warning.style.bottom = "0"
+    warning.style.left = "0"
+    warning.style.right = "0"
+    warning.style.height = "150px"
+    warning.style.backgroundColor = 'yellow'
+    warning.style.zIndex = 4000
+
+    document.body.appendChild(warning);
+    document.body.insertBefore(warning, document.body.firstChild)
+}
+
 const findAndMarkCommercialsInPage = async (rules) => {
+    if (!rules) return
+
     requestAnimationFrame(() => {
         const targetNodes = rules.filter(rule => new RegExp(rule.domain).test(window.location.hostname)).reduce((nodes, rule) => {
             const potenial = Array.from(document.querySelectorAll(rule.selector))
@@ -255,12 +276,17 @@ const findAndMarkCommercialsInPage = async (rules) => {
         }, [])
 
 
-        targetNodes.forEach(node => {
+        // targetNodes.forEach(node => {
 
-            if (!node.className.includes('shakuf_marked_commercial')) {
-                node.className += ' shakuf_marked_commercial'
-            }
-        })
+        //     if (!node.className.includes('shakuf_marked_commercial')) {
+        //         node.className += ' shakuf_marked_commercial'
+        //     }
+        // })
+
+        if (targetNodes.length > 0) {
+            addComercialWarning()
+        }
+
         setTimeout(findAndMarkCommercialsInPage.bind(null, rules), findingInPageIntervalDurationMs);
     });
 };
