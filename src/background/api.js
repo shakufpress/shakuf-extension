@@ -88,7 +88,7 @@ const fetchData = async () => {
     try {
         names = [];
         data = {};
-        let response = await Promise.all([fetch(url + '?cb=' +  new Date().getTime()), updateRules()])
+        let response = await Promise.all([fetch(url + '?cb=' +  new Date().getTime()), fetchAndUpdateRules()])
         let json = await response.json();
         prepareData(json);
         //  console.log(data, names);
@@ -107,7 +107,7 @@ const fetchRules = async () => {
     }
 };
 
-const updateRules = async () => {
+const fetchAndUpdateRules = async () => {
     try {
         rules = await fetchRules()
     } catch (e) {
