@@ -8,6 +8,7 @@ import {
     SHAKUF_MARKED_CLASSNAME,
     SHOULD_RUN_ON_PAGE
 } from '../constants';
+import Warning from '../warning/warning'
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
 const marginOfHiding = 75;
