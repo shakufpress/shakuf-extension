@@ -12,10 +12,5 @@ module.exports = merge(common, {
                 NODE_ENV: JSON.stringify('development')
             }
         })
-    ],
-    resolve: {
-        alias: {
-            "styled-components": path.resolve(__dirname, "node_modules", "styled-components"),
-        }
-    }
+    ]
 });
