@@ -1,3 +1,5 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import {
     IFRAME_ID,
     INNER_IFRAME_ID,
@@ -247,48 +249,42 @@ const isElementCurrentlyBeingEdited = (e) => {
 };
 
 const addComercialWarning = () => {
-    const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID)
-    if (warningNode) return
+  const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
+  if (warningNode) return;
 
-    const warning = document.createElement('div')
-    warning.id = SHAKUF_WARNING_ELEMENT_ID
-    warning.style.position = "fixed"
-    warning.style.bottom = "0"
-    warning.style.left = "0"
-    warning.style.right = "0"
-    warning.style.height = "150px"
-    warning.style.backgroundColor = 'yellow'
-    warning.style.zIndex = 4000
+  const container = document.createElement('div');
 
-    document.body.appendChild(warning);
-    document.body.insertBefore(warning, document.body.firstChild)
-}
+  document.body.appendChild(container);
+  document.body.insertBefore(container, document.body.firstChild);
+
+  ReactDOM.render(<Warning />, container);
+};
 
 const findAndMarkCommercialsInPage = async (rules) => {
-    if (!rules) return
+  if (!rules) return;
 
-    requestAnimationFrame(() => {
-        const targetNodes = rules.filter(rule => new RegExp(rule.domain).test(window.location.hostname)).reduce((nodes, rule) => {
-            const potenial = Array.from(document.querySelectorAll(rule.selector))
+  requestAnimationFrame(() => {
+    const targetNodes = rules
+      .filter((rule) => new RegExp(rule.domain).test(window.location.hostname))
+      .reduce((nodes, rule) => {
+        const potenial = Array.from(document.querySelectorAll(rule.selector));
 
-            const additionalNodes = potenial.filter(node => node.innerText && new RegExp(rule.regexRule).test(node.innerText))
-            return [...nodes, ...additionalNodes]
-        }, [])
+        const additionalNodes = potenial.filter(
+          (node) =>
+            node.innerText && new RegExp(rule.regexRule).test(node.innerText)
+        );
+        return [...nodes, ...additionalNodes];
+      }, []);
 
+    if (targetNodes.length > 0) {
+      addComercialWarning();
+    }
 
-        // targetNodes.forEach(node => {
-
-        //     if (!node.className.includes('shakuf_marked_commercial')) {
-        //         node.className += ' shakuf_marked_commercial'
-        //     }
-        // })
-
-        if (targetNodes.length > 0) {
-            addComercialWarning()
-        }
-
-        setTimeout(findAndMarkCommercialsInPage.bind(null, rules), findingInPageIntervalDurationMs);
-    });
+    setTimeout(
+      findAndMarkCommercialsInPage.bind(null, rules),
+      findingInPageIntervalDurationMs
+    );
+  });
 };
 
 
