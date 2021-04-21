@@ -19,7 +19,7 @@ const shouldHideCheckIntervalDurationInMs = 200;
 const findingInPageIntervalDurationMs = 2000;
 
 const SELECTORS_TO_SEARCH_ON = 'body *:not(iframe):not(script):not(img):not(br):not(.shakuf_marked):not(link):not(style)';
-const SHAKUF_WARNING_ELEMENT_ID = 'shakuf_warning'
+export const SHAKUF_WARNING_ELEMENT_ID = 'shakuf_warning'
 
 //  mouseover the relevant detected name should show the overlay:
 document.addEventListener('mouseover', (nameElement) => {

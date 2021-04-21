@@ -24,6 +24,14 @@ export const URLS = {
     JOIN: 'https://shakuf.press/join/'
 };
 
+export const COLORS = {
+    button_red: "#ff4d30",
+    link_blue: "#0961f1",
+    text_dark_grey: "#464646",
+    light_yellow: "#fff7b5",
+    yellow: "#ffef6b",
+}
+
 export const VIEWS = {
     PRIMARY: 'primary',
     WORK: 'work',
