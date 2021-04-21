@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SHAKUF_WARNING_ELEMENT_ID } from '../content/content';
 // import { ReactComponent as XSvg } from '../images/x.svg';
 // import { ReactComponent as WarningSvg } from '../images/warning.svg';
-import {COLORS} from '../constants/index'
+import { COLORS } from '../constants/index';
 
 const Warning = () => {
   return (
@@ -22,7 +22,7 @@ const Warning = () => {
       <div
         style={{
           flex: 0.2,
-          backgroundColor: 'red',
+          backgroundColor: COLORS.light_yellow,
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
@@ -37,59 +37,80 @@ const Warning = () => {
             left: 0,
             height: 30,
             width: 30,
-            margin: 5
+            margin: 5,
           }}
           type='image/svg+xml'
           data={chrome.runtime.getURL('../images/x.svg')}
           width='50'
           height='50'
         ></object>
-        <button style={{
-          color: 'white',
-          backgroundColor: COLORS.button_red
-        }}>
-        <object
-          // style={{
-          //   position: 'absolute',
-          //   top: 0,
-          //   left: 0,
-          //   height: 30,
-          //   width: 30,
-          //   margin: 5
-          // }}
-          type='image/svg+xml'
-          data={chrome.runtime.getURL('../images/arrow-left.svg')}
-          width='50'
-          height='50'
-        ></object>
-          צא מהכתבה</button>
-        <button>אני רוצה להשאר בכתבה</button>
+        <button
+          style={{
+            color: 'white',
+            backgroundColor: COLORS.button_red,
+            display: 'flex',
+            alignItems: 'center',
+            border: 'none',
+            borderRadius: 10,
+          }}
+        >
+          <object
+            // style={{
+            //   position: 'absolute',
+            //   top: 0,
+            //   left: 0,
+            //   height: 30,
+            //   width: 30,
+            //   margin: 5
+            // }}
+            type='image/svg+xml'
+            data={chrome.runtime.getURL('../images/arrow-left.svg')}
+            width='50'
+            height='50'
+          ></object>
+          צא מהכתבה
+        </button>
+        <button
+          style={{
+            border: 'none',
+            background: 'no-repeat',
+            borderBottom: '1px solid #1e2f45',
+            marginTop: 5,
+          }}
+        >
+          אני רוצה להשאר בכתבה
+        </button>
       </div>
       <div
         style={{
           flex: 0.8,
-          backgroundColor: 'yellow',
+          backgroundColor: COLORS.yellow,
           display: 'flex',
         }}
       >
         <div
           style={{
             display: 'flex',
-            flexDiretion: 'column',
+            flexDirection: 'column',
             alignItems: 'flex-end',
             flex: 1,
+            justifyContent: 'space-evenly',
           }}
         >
-          <span >זהירות</span>
-          <span>נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.</span>
-          <a href=''>להסבר</a>
+          <span style={{ fontSize: 30, color: COLORS.button_red }}>זהירות</span>
+          <div>
+            <span style={{ fontSize: 20 }}>
+              נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
+            </span>
+            <a href=''>להסבר</a>
+          </div>
           <span>אזהרה זו מוצגת מכיוון שהתקנת את התוסף</span>
         </div>
         <object
           style={{
             width: 100,
             height: 100,
-            margin: 20
+            margin: 20,
           }}
           type='image/svg+xml'
           data={chrome.runtime.getURL('../images/warning.svg')}
