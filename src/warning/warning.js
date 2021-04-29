@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { SHAKUF_WARNING_ELEMENT_ID } from '../content/content';
-// import { ReactComponent as XSvg } from '../images/x.svg';
-// import { ReactComponent as WarningSvg } from '../images/warning.svg';
 import { COLORS } from '../constants/index';
 
-const Warning = () => {
+const Warning = ({ ruleDescription }) => {
+  const [display, setDisplay] = React.useState(true);
+
   return (
     <div
       style={{
         height: '150px',
-        zIndex: 4000,
+        zIndex: 10000,
         display: 'flex',
         alignItems: 'stretch',
         position: 'fixed',
         bottom: '0',
         left: '0',
         right: '0',
+        visibility: display ? 'visible' : 'hidden',
       }}
       id={SHAKUF_WARNING_ELEMENT_ID}
     >
@@ -30,7 +31,7 @@ const Warning = () => {
           justifyContent: 'center',
         }}
       >
-        <object
+        <button
           style={{
             position: 'absolute',
             top: 0,
@@ -38,12 +39,17 @@ const Warning = () => {
             height: 30,
             width: 30,
             margin: 5,
+            border: 'none',
+            background: 'none',
+            cursor: 'pointer',
           }}
-          type='image/svg+xml'
-          data={chrome.runtime.getURL('../images/x.svg')}
-          width='50'
-          height='50'
-        ></object>
+          onClick={() => setDisplay(false)}
+        >
+          <img
+            style={{ width: 13, cursor: 'pointer' }}
+            src={chrome.runtime.getURL('../images/x.jpg')}
+          />
+        </button>
         <button
           style={{
             color: 'white',
@@ -53,16 +59,9 @@ const Warning = () => {
             border: 'none',
             borderRadius: 10,
           }}
+          onClick={() => window.history.back()}
         >
           <object
-            // style={{
-            //   position: 'absolute',
-            //   top: 0,
-            //   left: 0,
-            //   height: 30,
-            //   width: 30,
-            //   margin: 5
-            // }}
             type='image/svg+xml'
             data={chrome.runtime.getURL('../images/arrow-left.svg')}
             width='50'
@@ -104,7 +103,9 @@ const Warning = () => {
             </span>
             <a href=''>להסבר</a>
           </div>
-          <span>אזהרה זו מוצגת מכיוון שהתקנת את התוסף</span>
+          <span>
+            {ruleDescription || 'אזהרה זו מוצגת מכיוון שהתקנת את התוסף'}
+          </span>
         </div>
         <object
           style={{
@@ -115,7 +116,6 @@ const Warning = () => {
           type='image/svg+xml'
           data={chrome.runtime.getURL('../images/warning.svg')}
         ></object>
-        {/* <WarningSvg style={{}} /> */}
       </div>
     </div>
   );
