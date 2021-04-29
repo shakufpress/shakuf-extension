@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { SHAKUF_WARNING_ELEMENT_ID } from '../content/content';
 import { COLORS } from '../constants/index';
-import styled from 'styled-components';
 
-const Test = styled.div``;
 const Warning = ({ ruleDescription }) => {
   const [display, setDisplay] = React.useState(true);
 
