@@ -10,127 +10,136 @@ let rules = [];
 
 
 const decodeString = (str) => {
-    return str.replace(/&#(\d+);/g, (match, number) => {
-        return String.fromCharCode(number);
-    });
+  return str.replace(/&#(\d+);/g, (match, number) => {
+    return String.fromCharCode(number);
+  });
 };
 
 const prepareData = (json) => {
-    const currentKnesset = json.texts && json.texts.find(e => {
-        return e[HEBREW_LOOKUP.ATTRIBUTE_NAME] === HEBREW_LOOKUP.CURRENT_KNESSET;
+  const currentKnesset =
+    json.texts &&
+    json.texts.find((e) => {
+      return e[HEBREW_LOOKUP.ATTRIBUTE_NAME] === HEBREW_LOOKUP.CURRENT_KNESSET;
     });
 
-    //  new way, delete old after having in production
-    if (currentKnesset && currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]) {
-        const hakData = Object.values(json.src[currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]]);
-        hakData.forEach(hk => {
-            if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
-                return;
-            }
-
-            if (!hk[HEBREW_LOOKUP.NAME]) {
-                return;
-            }
-
-            hk.imgSrc = hk.image_filename;
-            let name = hk[HEBREW_LOOKUP.NAME];
-            if (["'", "׳"].includes(name[name.length - 1])) {
-                name = name.substring(0, name.length - 1);
-            }
-            names.push({name: name, id: hk['id']});
-            data[name] = hk;
-
-            if (hk[HEBREW_LOOKUP.NICKNAME] && hk[HEBREW_LOOKUP.NICKNAME] !== hk[HEBREW_LOOKUP.NAME]) {
-                hk[HEBREW_LOOKUP.NICKNAME].split(',').forEach(nickName => {
-                    names.push({name: nickName, id: hk['id']});
-                    data[nickName] = hk;
-                })
-            }
-
-        });
-
+  //  new way, delete old after having in production
+  if (currentKnesset && currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]) {
+    const hakData = Object.values(
+      json.src[currentKnesset[HEBREW_LOOKUP.ATTRIBUTE_VALUE]]
+    );
+    hakData.forEach((hk) => {
+      if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
         return;
+      }
+
+      if (!hk[HEBREW_LOOKUP.NAME]) {
+        return;
+      }
+
+      hk.imgSrc = hk.image_filename;
+      let name = hk[HEBREW_LOOKUP.NAME];
+      if (["'", '׳'].includes(name[name.length - 1])) {
+        name = name.substring(0, name.length - 1);
+      }
+      names.push({ name: name, id: hk['id'] });
+      data[name] = hk;
+
+      if (
+        hk[HEBREW_LOOKUP.NICKNAME] &&
+        hk[HEBREW_LOOKUP.NICKNAME] !== hk[HEBREW_LOOKUP.NAME]
+      ) {
+        hk[HEBREW_LOOKUP.NICKNAME].split(',').forEach((nickName) => {
+          names.push({ name: nickName, id: hk['id'] });
+          data[nickName] = hk;
+        });
+      }
+    });
+
+    return;
+  }
+
+  // old way to delete:
+  json.src.forEach((hk) => {
+    if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
+      return;
     }
 
+    if (!hk[HEBREW_LOOKUP.NAME]) {
+      return;
+    }
 
-    // old way to delete:
-    json.src.forEach(hk => {
-        if (hk[HEBREW_LOOKUP.HIDE_IN_SITE]) {
-            return;
-        }
-
-        if (!hk[HEBREW_LOOKUP.NAME]) {
-            return;
-        }
-
-        Object.keys(hk).forEach(e => {
-            hk[e] = decodeString(hk[e]);
-        });
-
-        let name = hk[HEBREW_LOOKUP.NAME];
-        if (["'", "׳"].includes(name[name.length - 1])) {
-            name = name.substring(0, name.length - 1);
-        }
-        names.push({name: name, id: hk['#']});
-        data[name] = hk;
-    });
-    json.images.forEach(hk => {
-        const name = hk.name;
-        if (!name || !data[name]) {
-            return;
-        }
-        data[hk.name].imgSrc = hk.src;
+    Object.keys(hk).forEach((e) => {
+      hk[e] = decodeString(hk[e]);
     });
 
+    let name = hk[HEBREW_LOOKUP.NAME];
+    if (["'", '׳'].includes(name[name.length - 1])) {
+      name = name.substring(0, name.length - 1);
+    }
+    names.push({ name: name, id: hk['#'] });
+    data[name] = hk;
+  });
+  json.images.forEach((hk) => {
+    const name = hk.name;
+    if (!name || !data[name]) {
+      return;
+    }
+    data[hk.name].imgSrc = hk.src;
+  });
 };
 
 const fetchData = async () => {
-    try {
-        names = [];
-        data = {};
-        let response = await Promise.all([fetch(url + '?cb=' +  new Date().getTime()), fetchAndUpdateRules()])
-        let json = await response.json();
-        prepareData(json);
-        //  console.log(data, names);
-    } catch (e) {
-        //  error
-    }
+  try {
+    names = [];
+    data = {};
+    let response = await Promise.all([
+      fetch(url + '?cb=' + new Date().getTime()),
+      fetchAndUpdateRules(),
+    ]);
+    let json = await response.json();
+    prepareData(json);
+    //  console.log(data, names);
+  } catch (e) {
+    //  error
+  }
 };
 
 const fetchRules = async () => {
-    try {
-        rules = [];
-        let response = await fetch(ext_rules_url);
-        return await response.json();
-    } catch (e) {
-        console.error(e)
-    }
+  try {
+    rules = [];
+
+    let response = await fetch(ext_rules_url);
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const fetchAndUpdateRules = async () => {
-    try {
-        rules = await fetchRules()
-    } catch (e) {
-        console.error(e)
-    }
+  try {
+    rules = await fetchRules();
+    console.log('rules: ', rules);
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export const init = async () => {
-    await fetchData();
-    setInterval(fetchData, fetchInterval);
+  await fetchData();
+  setInterval(fetchData, fetchInterval);
 
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        switch (message.action) {
-            case 'getRules':
-                sendResponse(rules);
-                break;
-            case 'getNames':
-                sendResponse(names);
-                break;
-            case 'getName':
-                sendResponse(data[message.name]);
-                break;
-        }
-        return true;
-    })
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    switch (message.action) {
+      case 'getRules':
+        sendResponse(rules);
+        break;
+      case 'getNames':
+        sendResponse(names);
+        break;
+      case 'getName':
+        sendResponse(data[message.name]);
+        break;
+    }
+    return true;
+  });
 };
