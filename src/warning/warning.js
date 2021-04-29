@@ -69,16 +69,6 @@ const Warning = ({ ruleDescription }) => {
           ></object>
           צא מהכתבה
         </button>
-        <button
-          style={{
-            border: 'none',
-            background: 'no-repeat',
-            borderBottom: '1px solid #1e2f45',
-            marginTop: 5,
-          }}
-        >
-          אני רוצה להשאר בכתבה
-        </button>
       </div>
       <div
         style={{
