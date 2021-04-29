@@ -249,7 +249,7 @@ const isElementCurrentlyBeingEdited = (e) => {
     });
 };
 
-const addComercialWarning = () => {
+const addComercialWarning = (targetRule) => {
   const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
   if (warningNode) return;
 
@@ -258,27 +258,28 @@ const addComercialWarning = () => {
   document.body.appendChild(container);
   document.body.insertBefore(container, document.body.firstChild);
 
-  ReactDOM.render(<Warning />, container);
+  ReactDOM.render(<Warning ruleDescription={targetRule.ruleDescription}/>, container);
 };
 
 const findAndMarkCommercialsInPage = async (rules) => {
   if (!rules) return;
 
   requestAnimationFrame(() => {
-    const targetNodes = rules
+    const targetRules = rules
       .filter((rule) => new RegExp(rule.domain).test(window.location.hostname))
-      .reduce((nodes, rule) => {
+      .filter((rule) => {
         const potenial = Array.from(document.querySelectorAll(rule.selector));
 
-        const additionalNodes = potenial.filter(
+        const targetNodes = potenial.filter(
           (node) =>
             node.innerText && new RegExp(rule.regexRule).test(node.innerText)
         );
-        return [...nodes, ...additionalNodes];
-      }, []);
 
-    if (targetNodes.length > 0) {
-      addComercialWarning();
+        return targetNodes.length > 0
+      })
+
+    if (targetRules.length > 0) {
+      addComercialWarning(targetRules[0]);
     }
 
     setTimeout(
