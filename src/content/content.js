@@ -289,22 +289,24 @@ const findAndMarkCommercialsInPage = async (rules) => {
   });
 };
 
+
 // main logic
 const onPageLogic = () => {
-  //  get all relevant names for page so we'll search for them
-  // chrome.runtime.sendMessage({action: 'getNames'}, (names) => {
-  //     if (chrome.runtime.lastError || !names) {
-  //         return console.error(chrome.runtime.lastError);
-  //     }
-  //     findAndMarkInPage(names);
-  // });
+    //  get all relevant names for page so we'll search for them
+    chrome.runtime.sendMessage({action: 'getNames'}, (names) => {
+        if (chrome.runtime.lastError || !names) {
+            return console.error(chrome.runtime.lastError);
+        }
+        findAndMarkInPage(names);
+    });
 
-  chrome.runtime.sendMessage({ action: 'getRules' }, (rules) => {
-    if (chrome.runtime.lastError || !rules) {
-      return console.error(chrome.runtime.lastError);
-    }
-    findAndMarkCommercialsInPage(rules);
-  });
+
+    chrome.runtime.sendMessage({action: 'getRules'}, (rules) => {
+        if (chrome.runtime.lastError || !rules) {
+            return console.error(chrome.runtime.lastError);
+        }
+        findAndMarkCommercialsInPage(rules)
+    });
 
     // const mock_rules = [{"id":"1","domain":"www\.ynet\.co\.il","selector":"span[data-text=true]","regexRule":"בשיתוף"},
     // {"id":"2","domain":"www\.ynet\.co\.il","selector":"span p:first-child","regexRule":"התכנים במדור זה מוגשים בשיתוף"},
