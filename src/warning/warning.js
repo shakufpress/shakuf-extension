@@ -91,7 +91,9 @@ const Warning = ({ ruleDescription }) => {
             <span style={{ fontSize: 20 }}>
               נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
             </span>
-            <a href=''>להסבר</a>
+            <a href='https://www.the7eye.org.il/414216' target='_blank'>
+              להסבר
+            </a>
           </div>
           <span>
             {ruleDescription || 'אזהרה זו מוצגת מכיוון שהתקנת את התוסף'}
