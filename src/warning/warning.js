@@ -47,7 +47,7 @@ const Warning = ({ ruleDescription }) => {
         >
           <img
             style={{ width: 13, cursor: 'pointer' }}
-            src={chrome.runtime.getURL('../images/x.jpg')}
+            src={chrome.runtime.getURL('../images/x.png')}
           />
         </button>
         <button
@@ -61,13 +61,11 @@ const Warning = ({ ruleDescription }) => {
           }}
           onClick={() => window.history.back()}
         >
-          <object
-            type='image/svg+xml'
-            data={chrome.runtime.getURL('../images/arrow-left.svg')}
-            width='50'
-            height='50'
-          ></object>
-          צא מהכתבה
+          <img
+            style={{ width: 30, height: 30, margin: 10, cursor: 'pointer' }}
+            src={chrome.runtime.getURL('../images/left-arrow.png')}
+          />
+          <span>צא מהכתבה</span>
         </button>
       </div>
       <div
@@ -99,15 +97,10 @@ const Warning = ({ ruleDescription }) => {
             {ruleDescription || 'אזהרה זו מוצגת מכיוון שהתקנת את התוסף'}
           </span>
         </div>
-        <object
-          style={{
-            width: 100,
-            height: 100,
-            margin: 20,
-          }}
-          type='image/svg+xml'
-          data={chrome.runtime.getURL('../images/warning.svg')}
-        ></object>
+        <img
+          style={{ width: 100, height: 100, margin: 20, cursor: 'pointer' }}
+          src={chrome.runtime.getURL('../images/warning.png')}
+        />
       </div>
     </div>
   );
