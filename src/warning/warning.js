@@ -86,11 +86,11 @@ const Warning = ({ ruleDescription }) => {
         >
           <span style={{ fontSize: 30, color: COLORS.button_red }}>זהירות</span>
           <div>
-            <span style={{ fontSize: 20 }}>
+            <span style={{ fontSize: 20, marginLeft: 5 }}>
               נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
             </span>
-            <a href='https://www.the7eye.org.il/414216' target='_blank'>
-              להסבר
+            <a href='https://www.the7eye.org.il/415907' target='_blank'>
+              להסבר נוסף
             </a>
           </div>
           <span>
