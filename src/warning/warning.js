@@ -11,6 +11,7 @@ const Warning = ({ ruleDescription }) => {
         height: '150px',
         zIndex: 10000,
         display: 'flex',
+        direction: 'ltr',
         alignItems: 'stretch',
         position: 'fixed',
         bottom: '0',
@@ -29,6 +30,7 @@ const Warning = ({ ruleDescription }) => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          maxWidth: 290,
         }}
       >
         <button
@@ -38,7 +40,8 @@ const Warning = ({ ruleDescription }) => {
             left: 0,
             height: 30,
             width: 30,
-            margin: 5,
+            margin: 8,
+            marginLeft: 12,
             border: 'none',
             background: 'none',
             cursor: 'pointer',
@@ -46,7 +49,7 @@ const Warning = ({ ruleDescription }) => {
           onClick={() => setDisplay(false)}
         >
           <img
-            style={{ width: 13, cursor: 'pointer' }}
+            style={{ width: 12, cursor: 'pointer' }}
             src={chrome.runtime.getURL('../images/x.png')}
           />
         </button>
@@ -58,6 +61,7 @@ const Warning = ({ ruleDescription }) => {
             alignItems: 'center',
             border: 'none',
             borderRadius: 10,
+            padding: 6,
           }}
           onClick={() => window.history.back()}
         >
@@ -73,6 +77,7 @@ const Warning = ({ ruleDescription }) => {
           flex: 0.8,
           backgroundColor: COLORS.yellow,
           display: 'flex',
+          flexGrow: 1,
         }}
       >
         <div
@@ -89,7 +94,11 @@ const Warning = ({ ruleDescription }) => {
             <span style={{ fontSize: 20, marginLeft: 5 }}>
               נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
             </span>
-            <a href='https://www.the7eye.org.il/415907' target='_blank'>
+            <a
+              style={{ textDecoration: 'underline', color: '#0000EE' }}
+              href='https://www.the7eye.org.il/415907'
+              target='_blank'
+            >
               להסבר נוסף
             </a>
           </div>
