@@ -1,3 +1,5 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import {
     IFRAME_ID,
     INNER_IFRAME_ID,
@@ -6,6 +8,7 @@ import {
     SHAKUF_MARKED_CLASSNAME,
     SHOULD_RUN_ON_PAGE
 } from '../constants';
+import Warning from '../warning/warning'
 
 let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
 const marginOfHiding = 75;
@@ -16,6 +19,7 @@ const shouldHideCheckIntervalDurationInMs = 200;
 const findingInPageIntervalDurationMs = 2000;
 
 const SELECTORS_TO_SEARCH_ON = 'body *:not(iframe):not(script):not(img):not(br):not(.shakuf_marked):not(link):not(style)';
+export const SHAKUF_WARNING_ELEMENT_ID = 'shakuf_warning'
 
 //  mouseover the relevant detected name should show the overlay:
 document.addEventListener('mouseover', (nameElement) => {
@@ -190,7 +194,7 @@ const isElementCurrentlyBeingEdited = (e) => {
 }
 
 // find the names in the page:
-    const findAndMarkInPage = async (names) => {
+const findAndMarkInPage = async (names) => {
     requestAnimationFrame(() => {
         const relevantElements = [];
         const elements = Array.from(document.querySelectorAll(SELECTORS_TO_SEARCH_ON));
@@ -245,6 +249,47 @@ const isElementCurrentlyBeingEdited = (e) => {
     });
 };
 
+const addComercialWarning = (targetRule) => {
+  const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
+  if (warningNode) return;
+
+  const container = document.createElement('div');
+
+  document.body.appendChild(container);
+  document.body.insertBefore(container, document.body.firstChild);
+
+  ReactDOM.render(<Warning ruleDescription={targetRule.ruleDescription}/>, container);
+};
+
+const findAndMarkCommercialsInPage = async (rules) => {
+  if (!rules) return;
+
+  requestAnimationFrame(() => {
+    const targetRules = rules
+      .filter((rule) => new RegExp(rule.domain).test(window.location.hostname))
+      .filter((rule) => {
+        const potenial = Array.from(document.querySelectorAll(rule.selector));
+
+        const targetNodes = potenial.filter(
+          (node) =>
+            node.innerText && new RegExp(rule.regexRule).test(node.innerText)
+        );
+
+        return targetNodes.length > 0
+      })
+
+    if (targetRules.length > 0) {
+      addComercialWarning(targetRules[0]);
+    }
+
+    setTimeout(
+      findAndMarkCommercialsInPage.bind(null, rules),
+      findingInPageIntervalDurationMs
+    );
+  });
+};
+
+
 // main logic
 const onPageLogic = () => {
     //  get all relevant names for page so we'll search for them
@@ -254,6 +299,21 @@ const onPageLogic = () => {
         }
         findAndMarkInPage(names);
     });
+
+
+    chrome.runtime.sendMessage({action: 'getRules'}, (rules) => {
+        if (chrome.runtime.lastError || !rules) {
+            return console.error(chrome.runtime.lastError);
+        }
+        findAndMarkCommercialsInPage(rules)
+    });
+
+    // const mock_rules = [{"id":"1","domain":"www\.ynet\.co\.il","selector":"span[data-text=true]","regexRule":"בשיתוף"},
+    // {"id":"2","domain":"www\.ynet\.co\.il","selector":"span p:first-child","regexRule":"התכנים במדור זה מוגשים בשיתוף"},
+    // {"id":"3","domain":"walla\.co\.il","selector":"div.author span","regexRule":"בשיתוף"},
+    // {"id":"4","domain":"www\.mako\.co\.il","selector":"ul.icons-bar a","regexRule":"בשיתוף"},
+    // ]
+    // findAndMarkCommercialsInPage(mock_rules)
 };
 
 //  STARTING HERE: asking background if should runs
