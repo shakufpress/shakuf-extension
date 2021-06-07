@@ -38,9 +38,11 @@ const prepareData = (json) => {
 
             hk.imgSrc = hk.image_filename;
             let name = hk[HEBREW_LOOKUP.NAME];
-            if (["'", '׳'].includes(name[name.length - 1])) {
-                name = name.substring(0, name.length - 1);
-            }
+
+            const elem = document.createElement('textarea');
+            elem.innerHTML = name;
+            name = elem.value;
+
             names.push({name: name, id: hk['id']});
             data[name] = hk;
 
@@ -73,7 +75,7 @@ const prepareData = (json) => {
         });
 
         let name = hk[HEBREW_LOOKUP.NAME];
-        if (["'", '׳'].includes(name[name.length - 1])) {
+        if (["'", "׳"].includes(name[name.length - 1])) {
             name = name.substring(0, name.length - 1);
         }
         names.push({name: name, id: hk['#']});
