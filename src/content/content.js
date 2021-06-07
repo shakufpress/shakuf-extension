@@ -194,7 +194,7 @@ const isElementCurrentlyBeingEdited = (e) => {
 }
 
 // find the names in the page:
-    const findAndMarkInPage = async (names) => {
+const findAndMarkInPage = async (names) => {
     requestAnimationFrame(() => {
         const relevantElements = [];
         const elements = Array.from(document.querySelectorAll(SELECTORS_TO_SEARCH_ON));
