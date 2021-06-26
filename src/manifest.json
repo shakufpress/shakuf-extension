@@ -16,14 +16,14 @@
     "128": "images/icon128.png"
   },
   "manifest_version": 2,
-  "name": "שקוף - מפת הח\"כים",
+  "name": "שקוף - הון-שלטון-עיתון",
   "permissions": [
     "*://*/*",
     "tabs",
     "storage",
     "contextMenus"
   ],
-  "short_name": "שקוף - מפת הח\"כים",
+  "short_name": "שקוף - הון-שלטון-עיתון",
   "version": "0.2.0",
   "web_accessible_resources": [
     "images/*",
