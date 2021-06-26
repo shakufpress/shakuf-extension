@@ -3,7 +3,8 @@ export const INNER_IFRAME_ID = 'shakuf_inner_iframe';
 export const SHOULD_RUN_ON_PAGE = 'should_run_on_page';
 export const SHAKUF_MARKED_CLASSNAME = 'shakuf_marked';
 export const STORAGE_KEYS = {
-    SHOULD_RUN_ON_PAGE: 'should_run_on_page'
+    SHOULD_RUN_ON_PAGE: 'should_run_on_page',
+    SHOULD_COMMERCIAL_RUN_ON_PAGE: 'should_commercial_run_on_page',
 };
 export const OVERLAY_MESSAGING = {
     SHAKUF_HOVER: 'shakuf_hover',
@@ -16,6 +17,10 @@ export const PAGE_MESSAGING = {
     STOP: 'stop'
 };
 
+export const RUNNING_TYPES = {
+    HAK: "HAK",
+    COMMERCIAL: "COMMERCIAL"
+}
 export const URLS = {
     UNINSTALL: 'https://shakuf.press/chrome-uninstall/',
     HAKS: 'https://shakuf.press/hak/',

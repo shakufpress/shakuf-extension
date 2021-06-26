@@ -5,12 +5,13 @@ import {
     INNER_IFRAME_ID,
     OVERLAY_MESSAGING,
     PAGE_MESSAGING,
+    RUNNING_TYPES,
     SHAKUF_MARKED_CLASSNAME,
     SHOULD_RUN_ON_PAGE
 } from '../constants';
 import Warning from '../warning/warning'
 
-let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun;
+let shouldHideCheckInterval, active, hovered, cursorX, cursorY, injectedThisSession, shouldRun, shouldRunCommercial;
 const marginOfHiding = 75;
 const overlayWidth = 650;
 const overlayHeight = 270;
@@ -249,49 +250,49 @@ const findAndMarkInPage = async (names) => {
     });
 };
 
-const addComercialWarning = (targetRule) => {
-  const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
-  if (warningNode) return;
+const addCommercialWarning = (targetRule) => {
+    const container = document.createElement('div');
 
-  const container = document.createElement('div');
+    document.body.appendChild(container);
+    document.body.insertBefore(container, document.body.firstChild);
 
-  document.body.appendChild(container);
-  document.body.insertBefore(container, document.body.firstChild);
-
-  ReactDOM.render(<Warning ruleDescription={targetRule.ruleDescription}/>, container);
+    ReactDOM.render(<Warning ruleDescription={targetRule.ruleDescription}/>, container);
 };
 
 const findAndMarkCommercialsInPage = async (rules) => {
-  if (!rules) return;
+    if (!rules) return;
 
-  requestAnimationFrame(() => {
-    const targetRules = rules
-      .filter((rule) => new RegExp(rule.domain).test(window.location.hostname))
-      .filter((rule) => {
-        const potenial = Array.from(document.querySelectorAll(rule.selector));
+    requestAnimationFrame(() => {
+        const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
+        if (!warningNode && shouldRunCommercial) {
+            const targetRules = rules
+                .filter((rule) => new RegExp(rule.domain).test(window.location.hostname))
+                .filter((rule) => {
+                    const potenial = Array.from(document.querySelectorAll(rule.selector));
 
-        const targetNodes = potenial.filter(
-          (node) =>
-            node.innerText && new RegExp(rule.regexRule).test(node.innerText)
+                    const targetNodes = potenial.filter(
+                        (node) =>
+                            node.innerText && new RegExp(rule.regexRule).test(node.innerText)
+                    );
+
+                    return targetNodes.length > 0
+                })
+
+            if (targetRules.length > 0) {
+                addCommercialWarning(targetRules[0]);
+            }
+        }
+
+        setTimeout(
+            findAndMarkCommercialsInPage.bind(null, rules),
+            findingInPageIntervalDurationMs
         );
-
-        return targetNodes.length > 0
-      })
-
-    if (targetRules.length > 0) {
-      addComercialWarning(targetRules[0]);
-    }
-
-    setTimeout(
-      findAndMarkCommercialsInPage.bind(null, rules),
-      findingInPageIntervalDurationMs
-    );
-  });
+    });
 };
 
 
 // main logic
-const onPageLogic = () => {
+const onPageHakLogic = () => {
     //  get all relevant names for page so we'll search for them
     chrome.runtime.sendMessage({action: 'getNames'}, (names) => {
         if (chrome.runtime.lastError || !names) {
@@ -299,31 +300,29 @@ const onPageLogic = () => {
         }
         findAndMarkInPage(names);
     });
+};
 
-
+const onPageCommercialLogic = () => {
     chrome.runtime.sendMessage({action: 'getRules'}, (rules) => {
         if (chrome.runtime.lastError || !rules) {
             return console.error(chrome.runtime.lastError);
         }
         findAndMarkCommercialsInPage(rules)
     });
-
-    // const mock_rules = [{"id":"1","domain":"www\.ynet\.co\.il","selector":"span[data-text=true]","regexRule":"בשיתוף"},
-    // {"id":"2","domain":"www\.ynet\.co\.il","selector":"span p:first-child","regexRule":"התכנים במדור זה מוגשים בשיתוף"},
-    // {"id":"3","domain":"walla\.co\.il","selector":"div.author span","regexRule":"בשיתוף"},
-    // {"id":"4","domain":"www\.mako\.co\.il","selector":"ul.icons-bar a","regexRule":"בשיתוף"},
-    // ]
-    // findAndMarkCommercialsInPage(mock_rules)
-};
+}
 
 //  STARTING HERE: asking background if should runs
 chrome.runtime.sendMessage({action: SHOULD_RUN_ON_PAGE}, (shouldRunOnPage) => {
     if (chrome.runtime.lastError) {
         return;
     }
-    if (shouldRunOnPage) {
+    if (shouldRunOnPage.hak) {
         shouldRun = true; // local flag
-        onPageLogic();
+        onPageHakLogic();
+    }
+    if (shouldRunOnPage.commercial) {
+        shouldRunCommercial = true; // local flag
+        onPageCommercialLogic();
     }
 });
 
@@ -332,18 +331,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.action) {
         case PAGE_MESSAGING.STOP:
             // stop from browser icon
-            shouldRun = false;
-            Array.from(document.querySelectorAll(`.${SHAKUF_MARKED_CLASSNAME}`)).forEach(e => {
-                e.classList.add('shakuf_stopped');
-            });
+            if (message.type === RUNNING_TYPES.HAK) {
+                shouldRun = false;
+                Array.from(document.querySelectorAll(`.${SHAKUF_MARKED_CLASSNAME}`)).forEach(e => {
+                    e.classList.add('shakuf_stopped');
+                });
+            } else {
+                shouldRunCommercial = false;
+                const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
+                if (warningNode) {
+                    warningNode.style.display = "none";
+                }
+            }
             break;
         case PAGE_MESSAGING.START:
             // start from browser icon
-            shouldRun = true;
+            if (message.type === RUNNING_TYPES.HAK) {
+                shouldRun = true;
+            } else {
+                shouldRunCommercial = true;
+            }
             Array.from(document.querySelectorAll(`.${SHAKUF_MARKED_CLASSNAME}`)).forEach(e => {
                 e.classList.remove('shakuf_stopped');
             });
-            onPageLogic();
+
+            onPageHakLogic();
+            const warningNode = document.getElementById(SHAKUF_WARNING_ELEMENT_ID);
+            if (warningNode) {
+                warningNode.style.display = "flex";
+                return;
+            }
+            onPageCommercialLogic();
             break;
     }
 });
