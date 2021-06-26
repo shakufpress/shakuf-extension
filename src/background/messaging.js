@@ -1,4 +1,4 @@
-import {SHOULD_RUN_ON_PAGE, OVERLAY_MESSAGING, STORAGE_KEYS} from "../constants";
+import {OVERLAY_MESSAGING, SHOULD_RUN_ON_PAGE, STORAGE_KEYS} from "../constants";
 import storage from "./storage";
 
 export const init = () => {
@@ -7,7 +7,8 @@ export const init = () => {
             case SHOULD_RUN_ON_PAGE:
                 try {
                     const shouldRun = await storage.get(STORAGE_KEYS.SHOULD_RUN_ON_PAGE);
-                    sendResponse(shouldRun !== false);
+                    const shouldRunCommercial = await storage.get(STORAGE_KEYS.SHOULD_COMMERCIAL_RUN_ON_PAGE);
+                    sendResponse({hak: !!shouldRun, commercial: !!shouldRunCommercial});
                 } catch (e) {
                     console.error(e);
                     sendResponse(true);

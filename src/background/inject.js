@@ -27,11 +27,11 @@ const getAllTabs = () => {
     })
 };
 
-export const updateAllTabsWithRunningState = async (shouldRun) => {
+export const updateAllTabsWithRunningState = async (shouldRun, type) => {
     try {
         const tabs = await getAllTabs();
         tabs.forEach(tab => {
-            chrome.tabs.sendMessage(tab.id, {action: shouldRun ? PAGE_MESSAGING.START : PAGE_MESSAGING.STOP}, () => {
+            chrome.tabs.sendMessage(tab.id, {action: shouldRun ? PAGE_MESSAGING.START : PAGE_MESSAGING.STOP, type}, () => {
                 if (chrome.runtime.lastError) {
                     //  nothing
                 }
