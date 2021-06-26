@@ -8,7 +8,10 @@ export const init = () => {
                 try {
                     const shouldRun = await storage.get(STORAGE_KEYS.SHOULD_RUN_ON_PAGE);
                     const shouldRunCommercial = await storage.get(STORAGE_KEYS.SHOULD_COMMERCIAL_RUN_ON_PAGE);
-                    sendResponse({hak: !!shouldRun, commercial: !!shouldRunCommercial});
+                    sendResponse({
+                        hak: shouldRun || typeof shouldRun === "undefined",
+                        commercial: shouldRunCommercial || typeof shouldRunCommercial === "undefined"
+                    });
                 } catch (e) {
                     console.error(e);
                     sendResponse(true);

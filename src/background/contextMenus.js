@@ -62,11 +62,11 @@ const createContactMenuItem = () => {
 const createStateMenuItem = async () => {
     const initialShouldRunOnPage = await storage.get(STORAGE_KEYS.SHOULD_RUN_ON_PAGE);
     const initialShouldCommercialRunOnPage = await storage.get(STORAGE_KEYS.SHOULD_COMMERCIAL_RUN_ON_PAGE);
-
+    
     chrome.contextMenus.create(
         {
             id: MENU_IDS.ON_OFF,
-            title: !initialShouldRunOnPage ? 'הפעל את מפת ההח״כים' : 'כבה את מפת הח״כים',
+            title: !initialShouldRunOnPage && typeof initialShouldRunOnPage !== "undefined" ? 'הפעל את מפת ההח״כים' : 'כבה את מפת הח״כים',
             contexts: ["page_action"],
             onclick: async () => {
                 const currentShouldRunOnPage = await storage.get(STORAGE_KEYS.SHOULD_RUN_ON_PAGE);
@@ -95,7 +95,7 @@ const createStateMenuItem = async () => {
     chrome.contextMenus.create(
         {
             id: MENU_IDS.ON_OFF_COMMERCIAL_WARNING,
-            title: !initialShouldCommercialRunOnPage ? 'הפעל זיהוי פרסום סמוי' : 'כבה זיהוי פרסום סמוי',
+            title: !initialShouldCommercialRunOnPage && typeof initialShouldCommercialRunOnPage !== "undefined"  ? 'הפעל זיהוי פרסום סמוי' : 'כבה זיהוי פרסום סמוי',
             contexts: ["page_action"],
             onclick: async () => {
                 const currentShouldRunOnPage = await storage.get(STORAGE_KEYS.SHOULD_COMMERCIAL_RUN_ON_PAGE);
