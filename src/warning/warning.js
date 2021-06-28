@@ -23,6 +23,44 @@ const Warning = ({ruleDescription}) => {
         >
             <div
                 style={{
+                    flex: 0.8,
+                    backgroundColor: COLORS.yellow,
+                    display: 'flex',
+                    flexGrow: 1,
+                }}
+            >
+                <img
+                    style={{width: 100, height: 100, margin: 20, cursor: 'pointer'}}
+                    src={chrome.runtime.getURL('../images/warning.png')}
+                />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        justifyContent: 'space-evenly',
+                        paddingRight: '8px'
+                    }}
+                >
+                    <span style={{fontSize: 30, color: COLORS.button_red}}>זהירות</span>
+                    <div>
+            <span style={{fontSize: 20, marginLeft: 5}}>
+              נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
+            </span>
+                        <a
+                            style={{textDecoration: 'underline', color: '#0000EE'}}
+                            href='https://www.the7eye.org.il/415907'
+                            target='_blank'
+                        >
+                            להסבר נוסף
+                        </a>
+                    </div>
+                    <span
+                        dangerouslySetInnerHTML={{__html: ruleDescription && unescape(ruleDescription) || 'אזהרה זו מוצגת מכיוון שהתקנת את התוסף'}}/>
+                </div>
+            </div>
+            <div
+                style={{
                     flex: 0.2,
                     backgroundColor: COLORS.light_yellow,
                     position: 'relative',
@@ -37,7 +75,7 @@ const Warning = ({ruleDescription}) => {
                     style={{
                         position: 'absolute',
                         top: 0,
-                        right: 0,
+                        left: 0,
                         height: 30,
                         width: 30,
                         margin: 8,
@@ -71,44 +109,6 @@ const Warning = ({ruleDescription}) => {
                     />
                     <span>צא מהכתבה</span>
                 </button>
-            </div>
-            <div
-                style={{
-                    flex: 0.8,
-                    backgroundColor: COLORS.yellow,
-                    display: 'flex',
-                    flexGrow: 1,
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        justifyContent: 'space-evenly',
-                        paddingRight: '8px'
-                    }}
-                >
-                    <span style={{fontSize: 30, color: COLORS.button_red}}>זהירות</span>
-                    <div>
-            <span style={{fontSize: 20, marginLeft: 5}}>
-              נראה שהכתבה הזו היא בעצם פרסומת ולא תוכן עיתונאי.
-            </span>
-                        <a
-                            style={{textDecoration: 'underline', color: '#0000EE'}}
-                            href='https://www.the7eye.org.il/415907'
-                            target='_blank'
-                        >
-                            להסבר נוסף
-                        </a>
-                    </div>
-                    <span
-                        dangerouslySetInnerHTML={{__html: ruleDescription && unescape(ruleDescription) || 'אזהרה זו מוצגת מכיוון שהתקנת את התוסף'}}/>
-                </div>
-                <img
-                    style={{width: 100, height: 100, margin: 20, cursor: 'pointer'}}
-                    src={chrome.runtime.getURL('../images/warning.png')}
-                />
             </div>
         </div>
     );
