@@ -39,7 +39,8 @@ const Warning = ({ruleDescription}) => {
                         flexDirection: 'column',
                         flex: 1,
                         justifyContent: 'space-evenly',
-                        paddingRight: '8px'
+                        paddingRight: '8px',
+                        alignItems: 'flex-start',
                     }}
                 >
                     <span style={{fontSize: 30, color: COLORS.button_red}}>זהירות</span>
