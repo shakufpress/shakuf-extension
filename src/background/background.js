@@ -4,8 +4,6 @@ import {init as runtimeInit} from './runtime';
 import {init as messagingInit} from './messaging';
 import {injectToAllTabs} from './inject';
 import {analytics} from "./ga";
-import storage from "./storage";
-import {STORAGE_KEYS} from "../constants";
 
 (async () => {
     //  Install/Update logic:
