@@ -24,7 +24,7 @@
     "contextMenus"
   ],
   "short_name": "שקוף - הון-שלטון-עיתון",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "web_accessible_resources": [
     "images/*",
     "overlay/overlay.html",
