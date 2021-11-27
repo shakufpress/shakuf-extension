@@ -12,7 +12,7 @@ export const init = () => {
             case 'update':
                 analytics.callEvent('General', 'Updated');
                 const prevVersion = details.previousVersion;
-                if (prevVersion === "0.2.1" && details.reason === "update") {
+                if (prevVersion === "0.2.2" && details.reason === "update") {
                     //temp: change active users with on for hak part to off
                     storage.set(STORAGE_KEYS.SHOULD_RUN_ON_PAGE, false);
                 }
