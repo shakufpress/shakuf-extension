@@ -12,7 +12,6 @@ export const init = () => {
             case 'update':
                 analytics.callEvent('General', 'Updated');
                 const prevVersion = details.previousVersion;
-                alert(prevVersion)
                 if (prevVersion === "0.2.1" && details.reason === "update") {
                     //temp: change active users with on for hak part to off
                     storage.set(STORAGE_KEYS.SHOULD_RUN_ON_PAGE, false);
