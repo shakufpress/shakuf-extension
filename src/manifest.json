@@ -19,12 +19,11 @@
   "name": "שקוף - הון-שלטון-עיתון",
   "permissions": [
     "*://*/*",
-    "tabs",
     "storage",
     "contextMenus"
   ],
   "short_name": "שקוף - הון-שלטון-עיתון",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "web_accessible_resources": [
     "images/*",
     "overlay/overlay.html",
